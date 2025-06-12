@@ -122,19 +122,17 @@ TermAgent/
 │   ├── config.py           # Configuration management
 │   ├── command_handler.py   # Command execution
 │   └── decorators.py        # Utility decorators
-├── AI Docs/                 # Comprehensive documentation
-├── Specs/                   # Feature specifications  
+├── tests/                   # Unit tests
 ├── requirements.txt         # Dependencies
-├── run.sh                   # Launch script
+├── pyproject.toml          # Project configuration
+├── setup.py                # Installation script
+├── run.sh                  # Launch script
 └── README.md               # This file
 ```
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our documentation in `AI Docs/` for:
-- `Coding_Conventions.md` - Code style guidelines
-- `Project_Architecture.md` - Technical architecture
-- `Feature_Template.md` - How to plan new features
+We welcome contributions! Please check the source code and tests for implementation details.
 
 ## 📜 License
 

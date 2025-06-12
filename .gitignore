@@ -152,3 +152,11 @@ ehthumbs.db
 *.tmp
 *.bak
 .secrets/
+
+# AI Documentation and Helper Files
+AI Docs/
+AI_DOCS.md
+CLAUDE.md
+Specs/
+.claude/
+docs/
