@@ -1,5 +1,5 @@
 # Core dependencies
-# Add your project dependencies here
+requests>=2.31.0  # For Ollama API communication
 
 # Development dependencies
 pytest>=7.4.0

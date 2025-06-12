@@ -1,178 +1,60 @@
-# Claude Code Context - TermSage
+# TermSage - Quick Reference Guide
 
-## Project Overview
-TermSage is a fully functional terminal application with built-in AI assistance. It works exactly like a regular terminal but adds intelligent auto-completion and AI help when you need it. Think of it as your normal terminal experience enhanced with AI superpowers.
+## 📁 Documentation Structure
 
-## Core Concept
-- **Primary Function**: Full-featured terminal that can execute any command
-- **AI Enhancement**: Optional AI assistance for command suggestions, troubleshooting, and explanations
-- **Smart Auto-Complete**: Context-aware command completion with AI suggestions
-- **Seamless Integration**: AI help is there when you want it, invisible when you don't
+### AI Docs/ - Comprehensive Documentation
+- **[API_Summary.md](AI%20Docs/API_Summary.md)** - External API documentation and integration details
+- **[Coding_Conventions.md](AI%20Docs/Coding_Conventions.md)** - Code style guidelines and standards
+- **[Configuration_Guide.md](AI%20Docs/Configuration_Guide.md)** - Configuration options and settings
+- **[Project_Architecture.md](AI%20Docs/Project_Architecture.md)** - System design and technical architecture
+- **[Troubleshooting.md](AI%20Docs/Troubleshooting.md)** - Common issues and debugging strategies
+- **[User_Guide.md](AI%20Docs/User_Guide.md)** - How to use TermSage effectively
 
-## Project Structure
-```
-TermAgent/
-├── src/                      # Core application modules
-│   ├── __init__.py
-│   ├── main.py              # Entry point and terminal loop
-│   ├── command_handler.py   # Command execution and safety checks
-│   └── config.py            # Configuration management
-├── tests/                    # Test suite
-│   ├── __init__.py
-│   └── test_main.py         # Main test file
-├── docs/                     # Documentation
-│   └── building-basic-terminal.md
-├── CLAUDE.md                # Project context for AI
-├── README.md                # User documentation
-├── requirements.txt         # Python dependencies
-├── pyproject.toml          # Project metadata
-└── setup.py                # Package setup
-```
+### Specs/ - Feature Specifications
+- **[Feature_Template.md](Specs/Feature_Template.md)** - Template for planning new features
 
-## How It Works
+### .claude/ - AI Context Priming
+- **[prime.sh](.claude/prime.sh)** - Shell script for loading project context
+- **[prime.md](.claude/prime.md)** - Markdown prompt for AI initialization
 
-### Normal Terminal Usage
-```bash
-# Works exactly like any terminal
-ls -la
-cd /home/user
-grep -r "pattern" .
-sudo apt update
-git status
-python script.py
-./my_script.sh
-```
+### Other Key Files
+- **[AI_DOCS.md](AI_DOCS.md)** - AI memory and session-specific learnings
+- **[README.md](README.md)** - User-facing documentation
 
-### AI-Enhanced Features
-```bash
-# Add ? to any command for AI help
-nmap?          # "Explain nmap and show common usage examples"
-docker?        # "Help with docker commands and best practices"
-git?           # "Git command suggestions and workflows"
+## 🚀 Quick Start
 
-# AI troubleshooting when commands fail
-command_that_fails  # AI automatically suggests fixes
+### For AI Assistants
+1. Run `.claude/prime.sh` or read `.claude/prime.md` to load full context
+2. Review `AI_DOCS.md` for project overview and recent learnings
+3. Check relevant documentation in `AI Docs/` based on the task
 
-# Chat mode for discussions
-/chat          # Toggle AI chat mode
-> "How do I find all files larger than 100MB?"
-> "Explain this error message: permission denied"
-> "What's the best way to monitor system resources?"
-```
+### For Developers
+1. Read `AI Docs/Project_Architecture.md` for system design
+2. Follow `AI Docs/Coding_Conventions.md` for code standards
+3. Use `Specs/Feature_Template.md` when planning new features
+4. Consult `AI Docs/Troubleshooting.md` when debugging
 
-### Smart Auto-Completion
-- **File/Directory Completion**: Standard tab completion for paths
-- **Command Completion**: Auto-complete command names and flags
-- **AI Suggestions**: Context-aware suggestions based on what you're trying to do
-- **History Integration**: Learn from your command patterns
-
-## Key Commands
-
-### Terminal Operations
-```bash
-# Standard terminal functionality
-any_command [args]    # Execute any system command
-cd [path]            # Change directory
-ls [options]         # List files
-history              # Show command history
-clear                # Clear screen
-exit                 # Exit terminal
-```
-
-### AI Features
-```bash
-/chat                # Toggle AI chat mode
-/help               # Show AI commands
-/models             # List available AI models
-/model <name>       # Switch AI model
-/clear              # Clear AI context
-command?            # Get AI help for any command
-```
-
-### Auto-Completion
-- **Tab**: Standard file/command completion
-- **Double-Tab**: Show all completions
-- **Ctrl+Space**: Trigger AI suggestions
-- **Arrow Keys**: Navigate completion menu
-
-## Development Guidelines
+## 🔑 Key Concepts
 
 ### Core Principles
-1. **Terminal First**: Must work as a full terminal before adding AI features
-2. **Non-Intrusive AI**: AI help is optional and doesn't interfere with normal usage
-3. **Performance**: Terminal operations should be fast and responsive
-4. **Safety**: Prevent dangerous commands with smart validation
-5. **Cross-Platform**: Work on Linux, macOS, and Windows
+- **Terminal First** - Full terminal functionality is primary
+- **Non-Intrusive AI** - AI enhances but doesn't interfere
+- **Performance** - Fast and responsive operations
+- **Cross-Platform** - Works on Linux, macOS, Windows
 
-### Code Architecture
-1. **Command Execution**: Use subprocess for reliable command execution
-2. **Async Operations**: AI calls don't block terminal operations
-3. **Error Handling**: Graceful fallbacks when AI is unavailable
-4. **Memory Management**: Efficient context handling for long sessions
-5. **Security**: Validate and sanitize all command inputs
+### Naming Conventions
+- Global Variables: `g_VARIABLE_NAME`
+- Constants: `c_CONSTANT_NAME`
+- Classes: `PascalCase`
+- Functions: `snake_case`
 
-### Code Style Guidelines
+### AI Integration
+- Command help with `?` suffix (e.g., `git?`)
+- Chat mode with `/chat`
+- Auto-completion with AI suggestions
+- Automatic error analysis
 
-#### Variable Naming Conventions
-- **Global Variables**: `g_VARIABLE_NAME` (e.g., `g_TERMINAL_CONFIG`, `g_AI_MODELS`)
-- **Constants**: `c_CONSTANT_NAME` (e.g., `c_MAX_RETRIES`, `c_TIMEOUT_SECONDS`)
-- **Class Variables**: `PascalCase` (e.g., `TerminalHandler`, `AIAssistant`)
-- **Instance Variables**: `snake_case` (e.g., `command_history`, `current_model`)
-- **Private Variables**: `_variable_name` (e.g., `_internal_state`, `_cache`)
-- **Function Parameters**: `snake_case` (e.g., `user_input`, `model_name`)
-
-#### Example Usage
-```python
-# Constants
-c_DEFAULT_MODEL = "ollama"
-c_MAX_CONTEXT_LENGTH = 4096
-c_COMMAND_TIMEOUT = 30
-
-# Global variables
-g_CURRENT_SESSION = None
-g_AI_PROVIDER = None
-
-# Class example
-class TerminalAgent:
-    def __init__(self, config_path):
-        self.config_path = config_path
-        self._internal_buffer = []
-        
-    def execute_command(self, user_input):
-        # Implementation here
-        pass
-```
-
-### AI Integration Points
-1. **Command Suggestions**: When user types `command?`
-2. **Failure Analysis**: When commands return non-zero exit codes
-3. **Chat Mode**: For general discussions and explanations
-4. **Auto-Completion**: Enhanced tab completion with AI context
-
-## Configuration
-
-### AI Providers
-- **Ollama**: Local models for privacy (primary)
-- **OpenAI**: GPT models for complex reasoning
-- **Anthropic**: Claude for detailed explanations
-- **Auto-Fallback**: Switch providers if one is unavailable
-
-### Performance Tiers
-- **High**: Full AI features, large context windows
-- **Medium**: Balanced performance and features
-- **Basic**: Essential AI features only
-- **Minimal**: Terminal-only mode with basic AI
-
-### Safety Features
-- **Command Validation**: Block potentially destructive commands
-- **Sudo Prompts**: Extra confirmation for privileged operations
-- **Resource Limits**: Prevent runaway processes
-- **Sandbox Mode**: Optional isolated execution environment
-
-## Target User Experience
-"I want to use my terminal normally, but sometimes I need help with commands, explanations, or troubleshooting. The AI should be there when I need it but never get in my way during normal terminal work."
-
-## Development Status
+## 📊 Project Status
 - ✅ Basic terminal functionality
 - ✅ Command execution and safety
 - ✅ AI model integration
@@ -181,3 +63,6 @@ class TerminalAgent:
 - 🔄 Cross-platform compatibility
 - 📋 Advanced context management
 - 📋 Performance optimizations
+
+---
+*This is a quick reference guide. For detailed information, explore the documentation in the directories listed above.*
