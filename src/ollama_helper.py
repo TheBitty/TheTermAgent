@@ -4,6 +4,7 @@ Ollama Integration - Interface with local Ollama installation
 
 import requests
 import json
+import os
 from typing import List, Dict, Optional
 from decorators import handle_requests_errors
 
@@ -140,7 +141,7 @@ class OllamaHelper:
     
     def get_help(self, command: str) -> str:
         """
-        Get AI help for a command
+        Get AI help for a command with context awareness
         
         Args:
             command: Command to get help for
@@ -155,22 +156,18 @@ class OllamaHelper:
             return ("❌ Ollama not available. Make sure it's running:\\n"
                    "   ollama serve")
         
-        # Create help prompt
-        prompt = f"""You are a helpful terminal assistant. Explain this command concisely:
-
-Command: {command}
-
-Provide:
-1. What the command does
-2. Common usage examples  
-3. Important flags/options
-4. Any safety warnings if needed
-
-Keep it practical and brief."""
+        # Check cache first for performance
+        cache_key = f"help_{command}_{os.getcwd()}"
+        if hasattr(self, '_help_cache') and cache_key in self._help_cache:
+            return self._help_cache[cache_key]
+        
+        # Detect context
+        context = self._detect_context()
+        
+        # Create smart, context-aware prompt
+        prompt = self._create_smart_prompt(command, context)
         
         try:
-            print(f"🤔 Getting help for '{command}' from {self.current_model}...")
-            
             response = requests.post(
                 f"{self.base_url}/api/generate",
                 json={
@@ -178,11 +175,11 @@ Keep it practical and brief."""
                     "prompt": prompt,
                     "stream": False,
                     "options": {
-                        "temperature": 0.7,
-                        "num_predict": 300  # Limit response length
+                        "temperature": 0.3,  # Lower temperature for more focused responses
+                        "num_predict": 150   # Reduced from 300 for performance
                     }
                 },
-                timeout=30
+                timeout=15  # Reduced timeout for faster responses
             )
             
             response.raise_for_status()
@@ -191,16 +188,78 @@ Keep it practical and brief."""
             ai_response = result.get("response", "").strip()
             
             if ai_response:
-                return f"🤖 {self.current_model}:\\n{ai_response}"
+                # Initialize cache if needed
+                if not hasattr(self, '_help_cache'):
+                    self._help_cache = {}
+                
+                # Cache the response
+                formatted_response = f"💡 {ai_response}"
+                self._help_cache[cache_key] = formatted_response
+                
+                # Keep cache size manageable
+                if len(self._help_cache) > 20:
+                    self._help_cache.pop(next(iter(self._help_cache)))
+                
+                return formatted_response
             else:
                 return "❌ No response from AI model"
                 
         except requests.Timeout:
-            return f"⏱️ Timeout waiting for {self.current_model}. Try a smaller model."
+            return f"⏱️ Response timeout. Try: man {command}"
         except requests.RequestException as e:
-            return f"❌ Error connecting to Ollama: {e}"
+            return f"❌ Connection error. Try: man {command}"
         except Exception as e:
             return f"❌ Error getting help: {e}"
+    
+    def _detect_context(self) -> dict:
+        """Detect current directory context for smarter help"""
+        context = {
+            'is_git_repo': os.path.exists('.git'),
+            'is_node_project': os.path.exists('package.json'),
+            'is_python_project': os.path.exists('requirements.txt') or os.path.exists('pyproject.toml'),
+            'is_docker_project': os.path.exists('Dockerfile'),
+            'current_dir': os.path.basename(os.getcwd()) if os.getcwd() != '/' else 'root'
+        }
+        return context
+    
+    def is_help_cached(self, command: str) -> bool:
+        """Check if help for command is cached"""
+        cache_key = f"help_{command}_{os.getcwd()}"
+        return hasattr(self, '_help_cache') and cache_key in self._help_cache
+    
+    def _create_smart_prompt(self, command: str, context: dict) -> str:
+        """Create context-aware, concise prompt"""
+        base_cmd = command.split()[0] if ' ' in command else command
+        
+        # Context-specific prompts for common commands
+        if base_cmd == 'git' and context['is_git_repo']:
+            return f"""Quick git help for: {command}
+
+Context: In git repository
+Give 2-3 most useful examples for this git command. Focus on practical usage, not explanations."""
+        
+        elif base_cmd == 'npm' and context['is_node_project']:
+            return f"""Quick npm help for: {command}
+
+Context: Node.js project
+Give 2-3 most useful examples. Focus on practical commands for this project."""
+        
+        elif base_cmd == 'docker' and context['is_docker_project']:
+            return f"""Quick docker help for: {command}
+
+Context: Docker project detected
+Give 2-3 most useful examples for working with this project."""
+        
+        elif base_cmd in ['pip', 'python'] and context['is_python_project']:
+            return f"""Quick Python help for: {command}
+
+Context: Python project
+Give 2-3 most useful examples for this project."""
+        
+        # Default concise prompt for other commands
+        return f"""Quick help for: {command}
+
+Give 2-3 most useful examples. Skip explanations, focus on practical syntax."""
     
     def test_model(self) -> bool:
         """

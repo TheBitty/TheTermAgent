@@ -152,12 +152,23 @@ class LoadingIndicator:
             time.sleep(0.1)
 
 def print_banner():
-    """Print TermSage banner with styling"""
+    """Print TermSage banner with ASCII art styling"""
     ui = UIUtils()
-    banner = f"""
-{ui.colorize('╔══════════════════════════════════════════════════╗', Color.BRIGHT_CYAN)}
-{ui.colorize('║', Color.BRIGHT_CYAN)} {ui.colorize('TermSage', Color.BRIGHT_WHITE, bold=True)} - AI-Enhanced Terminal                    {ui.colorize('║', Color.BRIGHT_CYAN)}
-{ui.colorize('╚══════════════════════════════════════════════════╝', Color.BRIGHT_CYAN)}
+    
+    # ASCII art banner
+    ascii_art = f"""
+{ui.colorize('████████╗███████╗██████╗ ███╗   ███╗███████╗ █████╗  ██████╗ ███████╗', Color.BRIGHT_CYAN)}
+{ui.colorize('╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██╔════╝██╔══██╗██╔════╝ ██╔════╝', Color.BRIGHT_CYAN)}
+{ui.colorize('   ██║   █████╗  ██████╔╝██╔████╔██║███████╗███████║██║  ███╗█████╗  ', Color.BRIGHT_CYAN)}
+{ui.colorize('   ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║╚════██║██╔══██║██║   ██║██╔══╝  ', Color.BRIGHT_CYAN)}
+{ui.colorize('   ██║   ███████╗██║  ██║██║ ╚═╝ ██║███████║██║  ██║╚██████╔╝███████╗', Color.BRIGHT_CYAN)}
+{ui.colorize('   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝', Color.BRIGHT_CYAN)}
+"""
+    
+    tagline = f"                    {ui.colorize('AI-Enhanced Terminal Experience', Color.BRIGHT_WHITE, bold=True)}"
+    
+    banner = f"""{ascii_art}
+{tagline}
 
 {ui.info('Welcome to your intelligent terminal assistant!')}
 {ui.dim('Type "help" for a complete guide or try these quick examples:')}

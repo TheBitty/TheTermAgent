@@ -131,14 +131,20 @@ class CommandRegistry:
         command_name = command[:-1].strip()  # Remove the ?
         if command_name:
             if self.ollama.is_available():
-                indicator = LoadingIndicator("Getting help", self.ui)
-                indicator.start()
+                # Only show loading indicator if response is not cached
+                indicator = None
+                if not self.ollama.is_help_cached(command_name):
+                    indicator = LoadingIndicator("Getting help", self.ui)
+                    indicator.start()
+                
                 try:
                     help_text = self.ollama.get_help(command_name)
-                    indicator.stop()
+                    if indicator:
+                        indicator.stop()
                     print(self.ui.ai_response(help_text))
                 except Exception as e:
-                    indicator.stop()
+                    if indicator:
+                        indicator.stop()
                     print(self.ui.error(f"Error getting help: {e}"))
             else:
                 print(self.ui.warning(f"AI not available for help. Try: man {command_name}"))
