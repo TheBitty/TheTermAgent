@@ -148,4 +148,4 @@ This project is licensed under the MIT License.
 
 ---
 
-*Ready to supercharge your terminal experience? Run `./run.sh` and type `/tutorial` to get started!*
+*Ready to supercharge your terminal experience? Run `./run.sh` and type `/tutorial` to get started!*# TermAgent
