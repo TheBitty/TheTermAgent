@@ -1,149 +1,140 @@
-# TermSage - AI-Enhanced Terminal
+# TermSage
 
-TermSage is an intelligent terminal that enhances your command-line experience with AI assistance. It works exactly like your regular terminal but adds powerful AI features to help you be more productive.
+You know how you're always googling command syntax or trying to remember the right flags for `tar` or `find`? This fixes that.
 
-## ✨ Features
+TermSage is just your regular terminal, but when you're stuck on something, you can ask for help without leaving your workspace. Add a `?` to any command to get an explanation, or type `/chat` to have a longer conversation about what you're trying to do.
 
-### 🤖 **AI-Powered Help**
-- Add `?` to any command for instant AI explanations (e.g., `git?`, `docker?`)
-- Get contextual help based on your current directory and project type
-- Automatic error analysis with suggested fixes
+It's not trying to replace your terminal or change how you work. It just sits there quietly until you need it.
 
-### 💬 **Interactive Chat Mode**
-- Type `/chat` to start AI conversations about terminal tasks
-- Ask complex questions like "How do I find large files?" or "Help me write a backup script"
-- Natural language interaction for learning new commands
+## What it does
 
-### 🎨 **Enhanced User Experience**
-- **Colorized Output**: Success (green), errors (red), AI responses (cyan)
-- **Loading Indicators**: Visual feedback during AI operations
-- **Smart Prompts**: Shows current mode (normal/chat) and directory
-- **Interactive Tutorial**: First-time walkthrough of all features
+**Command help with `?`**
+Confused about a command? Just add `?` at the end. `git?` explains git stuff, `docker?` helps with Docker, `systemctl?` for services. Works with pretty much anything.
 
-### 🚀 **Smart Features**
-- **Auto-completion**: Enhanced tab completion with AI suggestions
-- **Command History**: Intelligent history with pattern learning
-- **Contextual Tips**: Helpful suggestions based on your workflow
-- **Safety Checks**: Prevents dangerous operations with confirmation prompts
+**Chat mode for bigger questions**
+Sometimes you need to talk through a problem. Type `/chat` and ask things like "how do I backup my photos but skip the cache files" or "what's eating all my disk space."
 
-### ⚙️ **Easy Setup**
-- **Onboarding Wizard**: Guided first-time setup
-- **Auto-configuration**: Detects available AI models automatically
-- **Multiple AI Models**: Support for various Ollama models
-- **Flexible Configuration**: Customize behavior to your preferences
+**Error analysis**
+When something breaks, it looks at the error and suggests what might have gone wrong. No more cryptic messages that make no sense.
 
-## 🛠 Installation
+**Still your terminal**
+Everything works exactly like before. Your aliases, your shell, your muscle memory. The AI stuff only shows up when you ask for it.
 
-### Quick Start
+## Installation
+
 ```bash
-# Clone the repository
 git clone <repository-url>
 cd TermAgent
-
-# Make the launcher executable
 chmod +x run.sh
-
-# Run TermSage (installs dependencies automatically)
 ./run.sh
 ```
 
-### Manual Installation
-```bash
-# Install Python dependencies
-pip install requests
+That's it. The script installs what it needs and starts up. First time it runs, it'll ask you a few setup questions.
 
-# Run from source directory
+If you want to do it manually:
+```bash
+pip install requests
 cd src
 python main.py
 ```
 
-### Requirements
+**Requirements:**
 - Python 3.8+
-- Ollama (optional, for AI features)
-  - Install from: https://ollama.com/download
-  - Quick install: `curl -fsSL https://ollama.com/install.sh | sh`
+- Ollama (if you want local AI models instead of cloud ones)
 
-## 🚀 Usage
+To get Ollama: `curl -fsSL https://ollama.com/install.sh | sh`
 
-### Basic Commands
+## How to use it
+
+Once it's running, just use your terminal like normal. When you need help:
+
 ```bash
-# Get help for any command
-git?                 # Learn git commands and workflows
-docker?              # Docker help and examples
-tar?                 # Archive command explanations
-
-# Start AI chat mode
-/chat                # Interactive AI conversations
-> "How do I monitor CPU usage?"
-> "Help me write a bash script"
-
-# Interactive features
-/tutorial            # Complete feature walkthrough
-/setup               # Re-run setup wizard
-help                 # Show all commands
-```
-
-### Example Workflow
-```bash
-# Regular terminal usage works exactly the same
+# Regular terminal stuff works fine
 ls -la
 cd ~/projects
 git status
 
-# Add AI help when needed
-systemctl?           # "How do I manage services?"
-find?                # "Help me search for files"
+# Stuck on something? Add a ?
+git?                 # explains git commands
+docker?              # docker help
+find?                # how to search for files
 
-# Chat for complex tasks
+# Need to talk through a problem?
 /chat
-> "I need to backup my home directory excluding cache files"
-> "What's the best way to monitor disk usage over time?"
+> "I want to backup my home folder but skip cache files"
+> "What's using all my disk space?"
+> "Help me write a script to organize my downloads"
+
+# See what else you can do
+help                 # shows all commands
+/tutorial            # walks through the features
 ```
 
-## 🎯 Key Benefits
+## Example
 
-- **Zero Learning Curve**: Works exactly like your regular terminal
-- **Instant Help**: No need to search online for command syntax
-- **Error Recovery**: AI suggests fixes when commands fail
-- **Learning Tool**: Gradually learn new commands with AI guidance
-- **Privacy Option**: Use local Ollama models - no data leaves your machine
+Say you're trying to push some code and it fails:
 
-## 📁 Project Structure
+```bash
+$ git push origin main
+error: failed to push some refs to 'origin'
+
+# TermSage sees the error and suggests:
+"Looks like there are conflicts. Try 'git pull --rebase origin main' 
+first, resolve conflicts, then push."
+
+# Want more details?
+git?
+# explains your git situation
+
+# Or get help working through it:
+/chat
+> "I'm getting merge conflicts and don't want to mess anything up"
+```
+
+## Why this is useful
+
+You don't have to learn anything new or change how you work. When you're stuck, the help is right there instead of having to google around or dig through man pages.
+
+If you're privacy-conscious, you can run everything locally with Ollama. If you want more powerful AI, you can use cloud services. Your choice.
+
+## Code structure
 
 ```
 TermAgent/
-├── src/                      # Core application
-│   ├── main.py              # Main terminal loop  
-│   ├── ui_utils.py          # Enhanced UI and colors
-│   ├── command_registry.py  # Command handling system
-│   ├── help_system.py       # Tutorial and help features
-│   ├── onboarding.py        # Setup wizard
-│   ├── ollama_helper.py     # AI integration
-│   ├── config.py           # Configuration management
-│   ├── command_handler.py   # Command execution
-│   └── decorators.py        # Utility decorators
-├── tests/                   # Unit tests
-├── requirements.txt         # Dependencies
-├── pyproject.toml          # Project configuration
-├── setup.py                # Installation script
-├── run.sh                  # Launch script
-└── README.md               # This file
+├── src/
+│   ├── main.py              # main terminal loop
+│   ├── ui_utils.py          # colors and UI stuff
+│   ├── command_registry.py  # handles commands
+│   ├── help_system.py       # tutorial and help
+│   ├── onboarding.py        # first-time setup
+│   ├── ollama_helper.py     # talks to AI models
+│   ├── config.py           # settings
+│   ├── command_handler.py   # runs commands safely
+│   └── decorators.py        # utility functions
+├── AI Docs/                 # project docs
+├── tests/                   # tests
+├── run.sh                  # launcher script
+└── README.md               # this file
 ```
 
-## 🤝 Contributing
+## How it works
 
-We welcome contributions! Please check the source code and tests for implementation details.
+The `?` suffix gets intercepted before your command runs, so it doesn't interfere with anything. Chat mode switches to a different input handler. Error analysis happens automatically in the background.
 
-## 📜 License
+Supports Ollama for local models (llama2, codellama, mistral) or cloud AI services.
 
-This project is licensed under the MIT License.
+## Contributing
 
-## 🆘 Getting Help
+The code is pretty straightforward. UI stuff is in `ui_utils.py`, AI integration is in `ollama_helper.py`, and commands are handled through a registry pattern in `command_registry.py`.
 
-1. **In TermSage**: Type `help` or `/tutorial`
-2. **Documentation**: Check the `AI Docs/` directory
-3. **Issues**: Report bugs or request features via GitHub issues
+Check the `AI Docs/` folder for more detailed info.
 
----
+## Support
 
-*Ready to supercharge your terminal experience? Run `./run.sh` and type `/tutorial` to get started!*# TermAgent
+Type `help` in TermSage to see commands, or `/tutorial` for a walkthrough.
+
+For bugs or questions, use GitHub issues.
+
+## License
+
+MIT
