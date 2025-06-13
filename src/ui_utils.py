@@ -9,137 +9,143 @@ import threading
 from typing import Optional
 from enum import Enum
 
+
 class Color(Enum):
     """ANSI color codes for terminal output"""
-    RESET = '\033[0m'
-    BOLD = '\033[1m'
-    DIM = '\033[2m'
-    
+
+    RESET = "\033[0m"
+    BOLD = "\033[1m"
+    DIM = "\033[2m"
+
     # Standard colors
-    BLACK = '\033[30m'
-    RED = '\033[31m'
-    GREEN = '\033[32m'
-    YELLOW = '\033[33m'
-    BLUE = '\033[34m'
-    MAGENTA = '\033[35m'
-    CYAN = '\033[36m'
-    WHITE = '\033[37m'
-    
+    BLACK = "\033[30m"
+    RED = "\033[31m"
+    GREEN = "\033[32m"
+    YELLOW = "\033[33m"
+    BLUE = "\033[34m"
+    MAGENTA = "\033[35m"
+    CYAN = "\033[36m"
+    WHITE = "\033[37m"
+
     # Bright colors
-    BRIGHT_RED = '\033[91m'
-    BRIGHT_GREEN = '\033[92m'
-    BRIGHT_YELLOW = '\033[93m'
-    BRIGHT_BLUE = '\033[94m'
-    BRIGHT_MAGENTA = '\033[95m'
-    BRIGHT_CYAN = '\033[96m'
-    BRIGHT_WHITE = '\033[97m'
+    BRIGHT_RED = "\033[91m"
+    BRIGHT_GREEN = "\033[92m"
+    BRIGHT_YELLOW = "\033[93m"
+    BRIGHT_BLUE = "\033[94m"
+    BRIGHT_MAGENTA = "\033[95m"
+    BRIGHT_CYAN = "\033[96m"
+    BRIGHT_WHITE = "\033[97m"
+
 
 class UIUtils:
     """Utility class for enhanced terminal UI"""
-    
+
     def __init__(self):
         # Check if colors are supported
         self.colors_enabled = self._supports_color()
-    
+
     def _supports_color(self) -> bool:
         """Check if terminal supports ANSI colors"""
         return (
-            hasattr(sys.stdout, 'isatty') and sys.stdout.isatty() and
-            'TERM' in os.environ and os.environ['TERM'] != 'dumb'
+            hasattr(sys.stdout, "isatty")
+            and sys.stdout.isatty()
+            and "TERM" in os.environ
+            and os.environ["TERM"] != "dumb"
         )
-    
+
     def colorize(self, text: str, color: Color, bold: bool = False) -> str:
         """Apply color to text if colors are supported"""
         if not self.colors_enabled:
             return text
-        
+
         color_code = color.value
         if bold:
             color_code = Color.BOLD.value + color_code
-        
+
         return f"{color_code}{text}{Color.RESET.value}"
-    
+
     def format_message(self, text: str, msg_type: str) -> str:
         """Format message with appropriate icon and color"""
         message_config = {
             "success": ("✓", Color.BRIGHT_GREEN),
-            "error": ("✗", Color.BRIGHT_RED), 
+            "error": ("✗", Color.BRIGHT_RED),
             "warning": ("⚠", Color.BRIGHT_YELLOW),
             "info": ("ℹ", Color.BRIGHT_BLUE),
-            "ai": ("🤖", Color.BRIGHT_CYAN)
+            "ai": ("🤖", Color.BRIGHT_CYAN),
         }
-        
+
         icon, color = message_config.get(msg_type, ("", Color.WHITE))
         return self.colorize(f"{icon} {text}", color)
-    
+
     def success(self, text: str) -> str:
         """Format success message in green"""
         return self.format_message(text, "success")
-    
+
     def error(self, text: str) -> str:
         """Format error message in red"""
         return self.format_message(text, "error")
-    
+
     def warning(self, text: str) -> str:
         """Format warning message in yellow"""
         return self.format_message(text, "warning")
-    
+
     def info(self, text: str) -> str:
         """Format info message in blue"""
         return self.format_message(text, "info")
-    
+
     def ai_response(self, text: str) -> str:
         """Format AI response in cyan"""
         return self.format_message(text, "ai")
-    
+
     def command(self, text: str) -> str:
         """Format command in bold"""
         return self.colorize(text, Color.WHITE, bold=True)
-    
+
     def prompt(self, text: str) -> str:
         """Format prompt in magenta"""
         return self.colorize(text, Color.BRIGHT_MAGENTA)
-    
+
     def dim(self, text: str) -> str:
         """Format text as dimmed"""
         if not self.colors_enabled:
             return text
         return f"{Color.DIM.value}{text}{Color.RESET.value}"
 
+
 class LoadingIndicator:
     """Animated loading indicator for long operations"""
-    
+
     def __init__(self, message: str = "Processing", ui_utils: Optional[UIUtils] = None):
         self.message = message
         self.ui_utils = ui_utils or UIUtils()
         self.is_running = False
         self.thread = None
-        self.frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
+        self.frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
         self.frame_index = 0
-    
+
     def start(self):
         """Start the loading animation"""
         if self.is_running:
             return
-        
+
         self.is_running = True
         self.thread = threading.Thread(target=self._animate)
         self.thread.daemon = True
         self.thread.start()
-    
+
     def stop(self):
         """Stop the loading animation"""
         if not self.is_running:
             return
-        
+
         self.is_running = False
         if self.thread:
             self.thread.join()
-        
+
         # Clear the line
-        sys.stdout.write('\r' + ' ' * (len(self.message) + 10) + '\r')
+        sys.stdout.write("\r" + " " * (len(self.message) + 10) + "\r")
         sys.stdout.flush()
-    
+
     def _animate(self):
         """Animation loop"""
         while self.is_running:
@@ -147,14 +153,15 @@ class LoadingIndicator:
             spinner_text = f"\r{self.ui_utils.colorize(frame, Color.BRIGHT_BLUE)} {self.message}..."
             sys.stdout.write(spinner_text)
             sys.stdout.flush()
-            
+
             self.frame_index = (self.frame_index + 1) % len(self.frames)
             time.sleep(0.1)
+
 
 def print_banner():
     """Print TermSage banner with ASCII art styling"""
     ui = UIUtils()
-    
+
     # ASCII art banner
     ascii_art = f"""
 {ui.colorize('████████╗███████╗██████╗ ███╗   ███╗███████╗ █████╗  ██████╗ ███████╗', Color.BRIGHT_CYAN)}
@@ -164,9 +171,9 @@ def print_banner():
 {ui.colorize('   ██║   ███████╗██║  ██║██║ ╚═╝ ██║███████║██║  ██║╚██████╔╝███████╗', Color.BRIGHT_CYAN)}
 {ui.colorize('   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝', Color.BRIGHT_CYAN)}
 """
-    
+
     tagline = f"                    {ui.colorize('AI-Enhanced Terminal Experience', Color.BRIGHT_WHITE, bold=True)}"
-    
+
     banner = f"""{ascii_art}
 {tagline}
 
@@ -180,6 +187,7 @@ def print_banner():
 """
     print(banner)
 
+
 def show_help():
     """Display comprehensive help information"""
     ui = UIUtils()
@@ -192,7 +200,7 @@ def show_help():
   {ui.command('/tutorial')}         Interactive feature walkthrough
   {ui.command('command?')}          Get AI help for any command (e.g., git?, docker?)
   {ui.command('/chat')}             Start conversational AI mode
-  {ui.command('exit')}              Exit TermSage
+  {ui.command('exit')} or {ui.command('/exit')}  Exit TermSage
 
 {ui.colorize('🤖 AI FEATURES', Color.BRIGHT_YELLOW, bold=True)}
   {ui.command('<command>?')}        Get contextual help for any command
@@ -225,6 +233,11 @@ def show_help():
   
   {ui.command('/config')}           View current settings
   {ui.command('/model llama2')}     Switch to different AI model
+  
+  {ui.dim('Advanced Options:')}
+    • {ui.command('terminal.start_with_sudo: true')} - Start with root privileges
+    • {ui.command('ai.enabled: false')} - Disable AI features
+    • {ui.command('ai.help_on_error: false')} - Disable error analysis
 
 {ui.colorize('💬 CHAT MODE COMMANDS', Color.BRIGHT_YELLOW, bold=True)}
   {ui.command('/exit')}             Exit chat mode
@@ -239,3 +252,4 @@ def show_help():
 {ui.dim('Pro tip: TermSage learns from your usage patterns to provide better suggestions!')}
 """
     print(help_text)
+
